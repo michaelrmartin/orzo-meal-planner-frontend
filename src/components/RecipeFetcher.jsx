@@ -1,6 +1,7 @@
 import "./RecipeFetcher.css";
 import { useState } from "react";
 import fetch from "node-fetch";
+import { JsonLd } from "jsonld/jsonld-spec";
 
 export function RecipeFetcher() {
   const [url, setUrl] = useState("");
@@ -11,7 +12,7 @@ export function RecipeFetcher() {
     setUrl(event.target.value);
   };
 
-  const handeFetchRecipe = async () => {
+  const handleFetchRecipe = async () => {
     try {
       const response = await fetch(url);
       const htmlContent = await response.text();
