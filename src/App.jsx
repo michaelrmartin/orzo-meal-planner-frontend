@@ -1,9 +1,10 @@
-import { RecipeFetcher } from "./components/RecipeFetcher";
+import { CreateUrl } from "./components/CreateUrl";
 
 function App() {
   return (
     <div>
-      <RecipeFetcher />
+      <h1>Michael</h1>
+      <CreateUrl />
     </div>
   );
 }
