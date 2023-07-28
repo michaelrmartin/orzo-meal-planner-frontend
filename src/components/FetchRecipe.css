@@ -11,3 +11,8 @@ form > label {
 form > input {
   margin-bottom: 10px;
 }
+
+.rawRecipe--image {
+  max-height: 300px;
+  max-width: 300px;
+}
