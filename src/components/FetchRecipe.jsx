@@ -54,7 +54,9 @@ export function FetchRecipe() {
 
       {rawRecipe && (
         <div>
-          <img className="rawRecipe--image" src={rawRecipe.image} />
+          {rawRecipe.images.map((image, index) => (
+            <img key={index} className="rawRecipe--image" src={image} alt={`Image ${index}`} />
+          ))}
           <h2>{rawRecipe.title}</h2>
           <h4>{rawRecipe.description}</h4>
           <p>Chef: {rawRecipe.chef}</p>
