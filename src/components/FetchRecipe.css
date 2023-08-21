@@ -1,3 +1,14 @@
+.container {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container > h1 {
+  font-family: "Bebas Neue";
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -12,7 +23,30 @@ form > input {
   margin-bottom: 10px;
 }
 
-.rawRecipe--image {
+.button1 {
+  background-color: white;
+}
+
+.recipe-data {
+  padding: 20px;
+}
+
+.recipe-data-images {
   max-height: 300px;
   max-width: 300px;
+  padding: 10px;
+  margin: 10px;
+  background-color: white;
+}
+
+.recipe-data-title,
+.recipe-data-description,
+.recipe-data-chef,
+.recipe-data-ingredients-head,
+.recipe-data-ingredients,
+.recipe-data-instructions-head,
+.recipe-data-instructions {
+  background-color: white;
+  padding: 10px;
+  margin: 10px;
 }

@@ -1,11 +1,12 @@
+import { Header } from "./components/Header";
 import { FetchRecipe } from "./components/FetchRecipe";
 
 function App() {
   return (
-    <div>
-      <h1>Recipe Fetcher</h1>
+    <>
+      <Header />
       <FetchRecipe />
-    </div>
+    </>
   );
 }
 

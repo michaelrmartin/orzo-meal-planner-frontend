@@ -33,7 +33,8 @@ export function FetchRecipe() {
   };
 
   return (
-    <>
+    <div className="container">
+      <h1>Recipe Fetcher</h1>
       <form onSubmit={handleFetchRecipe}>
         <label htmlFor="url">Input Recipe URL</label>
         <input
@@ -45,7 +46,7 @@ export function FetchRecipe() {
           size="30"
           required
         />
-        <button type="submit" disabled={isLoading}>
+        <button className="button1" type="submit" disabled={isLoading}>
           {isLoading ? "Fetching..." : "Fetch Recipe"}
         </button>
       </form>
@@ -53,27 +54,27 @@ export function FetchRecipe() {
       {error && <p>Error: {error}</p>}
 
       {rawRecipe && (
-        <div>
+        <div className="recipe-data">
           {rawRecipe.images.map((image, index) => (
-            <img key={index} className="rawRecipe--image" src={image} alt={`Image ${index}`} />
+            <img key={index} className="recipe-data-images" src={image} alt={`Image ${index}`} />
           ))}
-          <h2>{rawRecipe.title}</h2>
-          <h4>{rawRecipe.description}</h4>
-          <p>Chef: {rawRecipe.chef}</p>
-          <h3>Ingredients:</h3>
-          <ul>
+          <h2 className="recipe-data-title">{rawRecipe.title}</h2>
+          <h4 className="recipe-data-description">{rawRecipe.description}</h4>
+          <p className="recipe-data-chef">Chef: {rawRecipe.chef}</p>
+          <h3 className="recipe-data-ingredients-head">Ingredients:</h3>
+          <ul className="recipe-data-ingredients">
             {rawRecipe.ingredients.map((ingredient, index) => (
               <li key={index}>{ingredient}</li>
             ))}
           </ul>
-          <h3>Instructions:</h3>
-          <ol>
+          <h3 className="recipe-data-instructions-head">Instructions:</h3>
+          <ol className="recipe-data-instructions">
             {rawRecipe.instructions.map((step, index) => (
               <li key={index}>{step}</li>
             ))}
           </ol>
         </div>
       )}
-    </>
+    </div>
   );
 }
