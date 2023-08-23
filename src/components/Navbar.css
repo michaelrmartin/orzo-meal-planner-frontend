@@ -1,11 +1,12 @@
 nav {
   margin: 0;
   display: flex;
-  height: 70px;
+  height: 90px;
   box-shadow: 0px 2.9825618267059326px 7.456404209136963px rgba(0, 0, 0, 0.10);
 }
 
 nav > h1 {
   font-family: "Bebas Neue";
   padding-left: 30px;
+  font-size: 35px;
 }
