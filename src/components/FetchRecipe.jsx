@@ -1,15 +1,25 @@
 import "./FetchRecipe.css";
 import { useState } from "react";
 import axios from "axios";
+import { parseIngredient } from "parse-ingredient";
 
 export function FetchRecipe() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState(null);
   const [rawRecipe, setRawRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [ingredients, setIngredients] = useState([]);
+  const [parsedIngredients, setParsedIngredients] = useState([]);
 
   const handleUrlChange = (event) => {
     setUrl(event.target.value);
+  };
+
+  const handleParseIngredients = () => {
+    const parsedIngredientsArray = ingredients.map((ingredient) =>
+      parseIngredient(ingredient, { normalizeUOM: true }, { allowLeadingOf: true })
+    );
+    setParsedIngredients(parsedIngredientsArray);
   };
 
   const handleFetchRecipe = async (event) => {
@@ -22,9 +32,12 @@ export function FetchRecipe() {
 
       console.log("Response:", response.data);
       setRawRecipe(response.data.raw_recipe);
+      setIngredients(response.data.raw_recipe.ingredients);
       setError(null);
       setUrl("");
       setIsLoading(false);
+      handleParseIngredients();
+      console.log(parsedIngredients);
     } catch (error) {
       console.error("Error:", error);
       setError(error.message);
