@@ -6,8 +6,10 @@ import { parseIngredient } from "parse-ingredient";
 export function FetchRecipe() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState([]);
   const [rawRecipe, setRawRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [ingredients, setIngredients] = useState([]);
   const [parsedIngredients, setParsedIngredients] = useState([]);
 
@@ -36,8 +38,6 @@ export function FetchRecipe() {
       setError(null);
       setUrl("");
       setIsLoading(false);
-      handleParseIngredients();
-      console.log(parsedIngredients);
     } catch (error) {
       console.error("Error:", error);
       setError(error.message);
@@ -45,35 +45,61 @@ export function FetchRecipe() {
     }
   };
 
+  const handlePostRecipe = (event) => {
+    event.preventDefault();
+    setErrors([]);
+    axios
+      .post("http://localhost:3000/recipes", rawRecipe)
+      .then((response) => {
+        console.log(response.data);
+        setRawRecipe(null);
+      })
+      .catch((error) => {
+        console.log(error.response.data.errors);
+        setErrors(error.response.data.errors);
+      });
+  };
+
   return (
     <div className="container">
-      <h1>Recipe Fetcher</h1>
-      <form onSubmit={handleFetchRecipe}>
-        <label htmlFor="url">Input Recipe URL</label>
-        <input
-          type="url"
-          value={url}
-          onChange={handleUrlChange}
-          placeholder="Enter Recipe URL"
-          pattern="https://.*"
-          size="30"
-          required
-        />
-        <button className="button1" type="submit" disabled={isLoading}>
-          {isLoading ? "Fetching..." : "Fetch Recipe"}
-        </button>
-      </form>
+      {!rawRecipe && (
+        <>
+          <h1>Recipe Fetcher</h1>
+          <form onSubmit={handleFetchRecipe}>
+            <label htmlFor="url">Input Recipe URL</label>
+            <input
+              type="url"
+              value={url}
+              onChange={handleUrlChange}
+              placeholder="Enter Recipe URL"
+              pattern="https://.*"
+              size="30"
+              required
+            />
+            <button className="button1" type="submit" disabled={isLoading}>
+              {isLoading ? "Fetching..." : "Fetch Recipe"}
+            </button>
+          </form>
+        </>
+      )}
 
       {error && <p>Error: {error}</p>}
 
       {rawRecipe && (
         <div className="recipe-data">
+          <ul>
+            {errors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
           {rawRecipe.images.map((image, index) => (
             <img key={index} className="recipe-data-images" src={image} alt={`Image ${index}`} />
           ))}
           <h2 className="recipe-data-title">{rawRecipe.title}</h2>
           <h4 className="recipe-data-description">{rawRecipe.description}</h4>
-          <p className="recipe-data-chef">Chef: {rawRecipe.chef}</p>
+          <p className="recipe-data-chef">
+            <strong>Chef</strong>: {rawRecipe.chef}
+          </p>
           <h3 className="recipe-data-ingredients-head">Ingredients:</h3>
           <ul className="recipe-data-ingredients">
             {rawRecipe.ingredients.map((ingredient, index) => (
@@ -86,6 +112,9 @@ export function FetchRecipe() {
               <li key={index}>{step}</li>
             ))}
           </ol>
+          <button onSubmit={handlePostRecipe} className="button1" type="submit" disabled={isSaving}>
+            {isLoading ? "Saving..." : "Save Recipe"}
+          </button>
         </div>
       )}
     </div>
