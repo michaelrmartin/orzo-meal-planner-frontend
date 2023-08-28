@@ -38,6 +38,7 @@ export function FetchRecipe() {
       setError(null);
       setUrl("");
       setIsLoading(false);
+      handleParseIngredients();
     } catch (error) {
       console.error("Error:", error);
       setError(error.message);
@@ -48,6 +49,7 @@ export function FetchRecipe() {
   const handlePostRecipe = (event) => {
     event.preventDefault();
     setErrors([]);
+    setIsSaving(true);
     axios
       .post("http://localhost:3000/recipes", rawRecipe)
       .then((response) => {
@@ -62,26 +64,22 @@ export function FetchRecipe() {
 
   return (
     <div className="container">
-      {!rawRecipe && (
-        <>
-          <h1>Recipe Fetcher</h1>
-          <form onSubmit={handleFetchRecipe}>
-            <label htmlFor="url">Input Recipe URL</label>
-            <input
-              type="url"
-              value={url}
-              onChange={handleUrlChange}
-              placeholder="Enter Recipe URL"
-              pattern="https://.*"
-              size="30"
-              required
-            />
-            <button className="button1" type="submit" disabled={isLoading}>
-              {isLoading ? "Fetching..." : "Fetch Recipe"}
-            </button>
-          </form>
-        </>
-      )}
+      <h1>Recipe Fetcher</h1>
+      <form onSubmit={handleFetchRecipe}>
+        <label htmlFor="url">Input Recipe URL</label>
+        <input
+          type="url"
+          value={url}
+          onChange={handleUrlChange}
+          placeholder="Enter Recipe URL"
+          pattern="https://.*"
+          size="30"
+          required
+        />
+        <button className="button1" type="submit" disabled={isLoading}>
+          {isLoading ? "Fetching..." : "Fetch Recipe"}
+        </button>
+      </form>
 
       {error && <p>Error: {error}</p>}
 
@@ -102,8 +100,8 @@ export function FetchRecipe() {
           </p>
           <h3 className="recipe-data-ingredients-head">Ingredients:</h3>
           <ul className="recipe-data-ingredients">
-            {rawRecipe.ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
+            {parsedIngredients.map((parsedIngredient, index) => (
+              <li key={index}>{parsedIngredient.quantity}</li>
             ))}
           </ul>
           <h3 className="recipe-data-instructions-head">Instructions:</h3>
@@ -112,9 +110,11 @@ export function FetchRecipe() {
               <li key={index}>{step}</li>
             ))}
           </ol>
-          <button onSubmit={handlePostRecipe} className="button1" type="submit" disabled={isSaving}>
-            {isLoading ? "Saving..." : "Save Recipe"}
-          </button>
+          <form onSubmit={handlePostRecipe}>
+            <button className="button1" type="submit" disabled={isSaving}>
+              {isLoading ? "Saving..." : "Save Recipe"}
+            </button>
+          </form>
         </div>
       )}
     </div>
