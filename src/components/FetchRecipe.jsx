@@ -10,19 +10,22 @@ export function FetchRecipe() {
   const [rawRecipe, setRawRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [ingredients, setIngredients] = useState([]);
-  const [parsedIngredients, setParsedIngredients] = useState([]);
+  // const [isParsing, setIsParsing] = useState(false);
+  // const [ingredients, setIngredients] = useState([]);
+  // const [parsedIngredients, setParsedIngredients] = useState([]);
 
   const handleUrlChange = (event) => {
     setUrl(event.target.value);
   };
 
-  const handleParseIngredients = () => {
-    const parsedIngredientsArray = ingredients.map((ingredient) =>
-      parseIngredient(ingredient, { normalizeUOM: true }, { allowLeadingOf: true })
-    );
-    setParsedIngredients(parsedIngredientsArray);
-  };
+  // const handleParseIngredients = (event) => {
+  //   event.preventDefault();
+  //   const parsedIngredientsArray = ingredients.map((ingredient) =>
+  //     parseIngredient(ingredient, { normalizeUOM: true }, { allowLeadingOf: true })
+  //   );
+  //   console.log(parsedIngredientsArray);
+  //   setParsedIngredients(parsedIngredientsArray);
+  // };
 
   const handleFetchRecipe = async (event) => {
     event.preventDefault();
@@ -33,12 +36,18 @@ export function FetchRecipe() {
       const response = await axios.post("http://localhost:3000/fetch_recipe", { url: url });
 
       console.log("Response:", response.data);
-      setRawRecipe(response.data.raw_recipe);
-      setIngredients(response.data.raw_recipe.ingredients);
+      const transformedRecipe = {
+        ...response.data.raw_recipe,
+        parsedIngredients: response.data.raw_recipe.ingredients.map((ingredient) => {
+          return parseIngredient(ingredient, { normalizeUOM: true }, { allowLeadingOf: true });
+        }),
+      };
+      console.log(transformedRecipe);
+      setRawRecipe(transformedRecipe);
+      // setIngredients(response.data.raw_recipe.ingredients);
       setError(null);
       setUrl("");
       setIsLoading(false);
-      handleParseIngredients();
     } catch (error) {
       console.error("Error:", error);
       setError(error.message);
@@ -55,6 +64,7 @@ export function FetchRecipe() {
       .then((response) => {
         console.log(response.data);
         setRawRecipe(null);
+        setIsSaving(false);
       })
       .catch((error) => {
         console.log(error.response.data.errors);
@@ -100,8 +110,8 @@ export function FetchRecipe() {
           </p>
           <h3 className="recipe-data-ingredients-head">Ingredients:</h3>
           <ul className="recipe-data-ingredients">
-            {parsedIngredients.map((parsedIngredient, index) => (
-              <li key={index}>{parsedIngredient.quantity}</li>
+            {rawRecipe.ingredients.map((ingredient, index) => (
+              <li key={index}>{ingredient}</li>
             ))}
           </ul>
           <h3 className="recipe-data-instructions-head">Instructions:</h3>
@@ -110,9 +120,14 @@ export function FetchRecipe() {
               <li key={index}>{step}</li>
             ))}
           </ol>
+          {/* <form onSubmit={handleParseIngredients}>
+            <button className="button1" type="submit" disabled={isParsing}>
+              {isParsing ? "Parsing..." : "Parse Ingredients"}
+            </button>
+          </form> */}
           <form onSubmit={handlePostRecipe}>
             <button className="button1" type="submit" disabled={isSaving}>
-              {isLoading ? "Saving..." : "Save Recipe"}
+              {isSaving ? "Saving..." : "Save Recipe"}
             </button>
           </form>
         </div>
