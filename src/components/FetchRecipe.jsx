@@ -100,9 +100,10 @@ export function FetchRecipe() {
               <li key={error}>{error}</li>
             ))}
           </ul>
-          {rawRecipe.images.map((image, index) => (
+          {/* {rawRecipe.images.map((image, index) => (
             <img key={index} className="recipe-data-images" src={image} alt={`Image ${index}`} />
-          ))}
+          ))} */}
+          <img className="recipe-data-images" src={rawRecipe.image} />
           <h2 className="recipe-data-title">{rawRecipe.title}</h2>
           <h4 className="recipe-data-description">{rawRecipe.description}</h4>
           <p className="recipe-data-chef">
